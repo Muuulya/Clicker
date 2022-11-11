@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Clicker;
@@ -7,6 +8,9 @@ using Random = Unity.Mathematics.Random;
 
 public class ObjectGenerator : MonoBehaviour
 {
+    public static Action<Vector3Int, Cell> AddProfitableCells;
+    public static Action<Vector3Int> RemoveProfitableCells;
+    
     private Tilemap _tilemapPlayingElements;
     private TileBase _newTile;
 
@@ -63,6 +67,7 @@ public class ObjectGenerator : MonoBehaviour
                 var pos = emptyCellsCount.ElementAt(_random.NextInt(0, emptyCellsCount.Count)).Key;
                 _tilemapPlayingElements.SetTile(pos,_newTile);
                 _cells[pos].CellStatus = CellStatus.Lv1;
+                AddProfitableCells.Invoke(pos,_cells[pos]);
             }
         }
     }
