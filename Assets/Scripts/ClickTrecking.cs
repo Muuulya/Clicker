@@ -58,22 +58,17 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
         _playArea = tilemap;
     }
 
-    private void Update()
-    {
-        Debug.Log(_mainCamera.ScreenToWorldPoint(Input.mousePosition));
-        // Debug.Log();
-    }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!_isDrag)
         {
             var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
             var clickCellPosition = _playArea.WorldToCell(clickWorldPosition);
             
-            Debug.Log($"Click on {clickCellPosition}, world position = {clickWorldPosition}");
-
+            if (_playingObjects.ContainsKey(clickCellPosition))
+            {
+                GlobalEventManager.AccrueMoney.Invoke(_playingObjects[clickCellPosition]);
+            }
         }
     }
 

@@ -19,10 +19,36 @@ public class Earnings : MonoBehaviour
     {
         Money = 0;
         _lastAccrual = Time.time;
-        // SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
         GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
     }
 
+    private void AccrueMoney(Cell cell)
+    {
+        int sum = 0;
+        switch (cell.CellStatus)
+        {
+            case CellStatus.Lv1:
+                sum += 1;
+                break;
+            case CellStatus.Lv2:
+                sum += 2;
+                break;
+            case CellStatus.Lv3:
+                sum += 4;
+                break;
+            case CellStatus.Lv4:
+                sum += 8;
+                break;
+            case CellStatus.Lv5:
+                sum += 16;
+                break;
+            case CellStatus.Empty:
+                throw new Exception($"ProfitableCell in key {cell} is enpty");
+                break;
+        }
+
+        Money += sum;
+    }
     void Update()
     {
         if (Time.time > _lastAccrual + _accrualInterval)
@@ -30,30 +56,9 @@ public class Earnings : MonoBehaviour
             int sum = 0;
             foreach (var cell in _profitableCells)
             {
-                switch (cell.Value.CellStatus)
-                {
-                    case CellStatus.Lv1:
-                        sum += 1;
-                        break;
-                    case CellStatus.Lv2:
-                        sum += 2;
-                        break;
-                    case CellStatus.Lv3:
-                        sum += 4;
-                        break;
-                    case CellStatus.Lv4:
-                        sum += 8;
-                        break;
-                    case CellStatus.Lv5:
-                        sum += 16;
-                        break;
-                    case CellStatus.Empty:
-                        throw new Exception($"ProfitableCell in key {cell.Key} is enpty");
-                        break;
-                }
+                AccrueMoney(cell.Value);
             }
-
-            Money += sum;
+            
             _lastAccrual = Time.time;
         }
     }
@@ -62,6 +67,7 @@ public class Earnings : MonoBehaviour
     {
         GlobalEventManager.AddFilledCell.AddListener(AddCell);
         GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
+        GlobalEventManager.AccrueMoney.AddListener(AccrueMoney);
     }
     
     private void AddCell(Vector3Int position, Cell cell)
