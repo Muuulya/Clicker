@@ -7,8 +7,8 @@ using UnityEngine.Tilemaps;
 
 public class LevelLoader : MonoBehaviour
 {
-    public static Action<Dictionary<Vector3Int, Cell>, Unity.Mathematics.Random, 
-        Tilemap, TileBase> LoadLevel;
+    // public static Action<Dictionary<Vector3Int, Cell>, Unity.Mathematics.Random, 
+    //     Tilemap, TileBase> LoadLevel;
     
     [SerializeField] private Tilemap _tilemapPlayArea;
     [SerializeField] private Tilemap _tilemapPlayingElements;
@@ -38,6 +38,7 @@ public class LevelLoader : MonoBehaviour
             }
         }
         
-        LoadLevel.Invoke(cells,_random, _tilemapPlayingElements, _playingElements[0]);
+        GlobalEventManager.LoadLevel.Invoke(cells,_random,_tilemapPlayingElements,_playingElements[0]);
+        GlobalEventManager.SendPlaingArea.Invoke(_tilemapPlayArea);
     }
 }

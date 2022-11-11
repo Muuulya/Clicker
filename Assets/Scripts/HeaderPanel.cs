@@ -1,6 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Clicker;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,12 +20,7 @@ public class HeaderPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        Earnings.SendEarnings += AddEarnings;
-    }
-
-    private void OnDisable()
-    {
-        Earnings.SendEarnings -= AddEarnings;
+        GlobalEventManager.SendEarnings.AddListener(AddEarnings);
     }
 
     private void AddEarnings(Earnings earnings)

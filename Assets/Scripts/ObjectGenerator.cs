@@ -8,9 +8,6 @@ using Random = Unity.Mathematics.Random;
 
 public class ObjectGenerator : MonoBehaviour
 {
-    public static Action<Vector3Int, Cell> AddProfitableCells;
-    public static Action<Vector3Int> RemoveProfitableCells;
-    
     private Tilemap _tilemapPlayingElements;
     private TileBase _newTile;
 
@@ -23,14 +20,9 @@ public class ObjectGenerator : MonoBehaviour
 
     private void OnEnable()
     {
-        LevelLoader.LoadLevel += LoadLevl;
+        GlobalEventManager.LoadLevel.AddListener(LoadLevl);
     }
 
-    private void OnDisable()
-    {
-        LevelLoader.LoadLevel -= LoadLevl;
-    }
-    
     private void LoadLevl(Dictionary<Vector3Int, Cell> cells, Random random,
         Tilemap tilemap, TileBase tile)
     {
@@ -67,7 +59,7 @@ public class ObjectGenerator : MonoBehaviour
                 var pos = emptyCellsCount.ElementAt(_random.NextInt(0, emptyCellsCount.Count)).Key;
                 _tilemapPlayingElements.SetTile(pos,_newTile);
                 _cells[pos].CellStatus = CellStatus.Lv1;
-                AddProfitableCells.Invoke(pos,_cells[pos]);
+                GlobalEventManager.AddFilledCell.Invoke(pos,_cells[pos]);
             }
         }
     }

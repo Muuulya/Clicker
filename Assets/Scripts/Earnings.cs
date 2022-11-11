@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Earnings : MonoBehaviour
 {
-    public static Action<Earnings> SendEarnings;
+    // public static Action<Earnings> SendEarnings;
 
     [SerializeField] private float _accrualInterval;
     
@@ -19,7 +19,8 @@ public class Earnings : MonoBehaviour
     {
         Money = 0;
         _lastAccrual = Time.time;
-        SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
+        // SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
+        GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
     }
 
     void Update()
@@ -59,14 +60,10 @@ public class Earnings : MonoBehaviour
 
     private void OnEnable()
     {
-        ObjectGenerator.AddProfitableCells += AddCell;
+        GlobalEventManager.AddFilledCell.AddListener(AddCell);
+        GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
     }
-
-    private void OnDisable()
-    {
-        ObjectGenerator.AddProfitableCells -= AddCell;
-    }
-
+    
     private void AddCell(Vector3Int position, Cell cell)
     {
         if (!_profitableCells.ContainsKey(position))

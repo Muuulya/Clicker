@@ -215,6 +215,7 @@ GameObject:
   - component: {fileID: 388997568}
   - component: {fileID: 388997567}
   - component: {fileID: 388997566}
+  - component: {fileID: 388997570}
   m_Layer: 0
   m_Name: TilemapPlayArea
   m_TagString: Untagged
@@ -1644,6 +1645,18 @@ Transform:
   m_Father: {fileID: 2018423969}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &388997570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388997564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a439bb21e7995bd46a03e5ea0e93de21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &484776123
 GameObject:
   m_ObjectHideFlags: 0
@@ -20651,6 +20664,7 @@ GameObject:
   - component: {fileID: 2018423967}
   - component: {fileID: 2018423966}
   - component: {fileID: 2018423970}
+  - component: {fileID: 2018423971}
   m_Layer: 0
   m_Name: Grid (2)
   m_TagString: Untagged
@@ -20737,6 +20751,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _accrualInterval: 3
+--- !u!114 &2018423971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018423965}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1082531529df25247beec6e94d1be6a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2027267651
 GameObject:
   m_ObjectHideFlags: 0
