@@ -22,8 +22,13 @@ namespace Clicker
         public static UnityEvent<Tilemap> SendPlaingArea =
             new UnityEvent<Tilemap>();
 
+        public static UnityEvent<Tilemap> SendPlaingElements =
+            new UnityEvent<Tilemap>();
+
         public static UnityEvent<Cell> AccrueMoney =
             new UnityEvent<Cell>();
+        
+        
     }
     
     

@@ -40,5 +40,6 @@ public class LevelLoader : MonoBehaviour
         
         GlobalEventManager.LoadLevel.Invoke(cells,_random,_tilemapPlayingElements,_playingElements[0]);
         GlobalEventManager.SendPlaingArea.Invoke(_tilemapPlayArea);
+        GlobalEventManager.SendPlaingElements.Invoke(_tilemapPlayingElements);
     }
 }

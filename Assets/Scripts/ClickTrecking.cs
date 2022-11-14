@@ -15,7 +15,9 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
     private bool _isDrag = false;
 
     private Tilemap _playArea;
+    private Tilemap _PlayingElements;
     private Dictionary<Vector3Int, Cell> _playingObjects = new Dictionary<Vector3Int, Cell>();
+    private GameObject _dragableObject;
 
     void Start()
     {
@@ -27,6 +29,7 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
         GlobalEventManager.AddFilledCell.AddListener(AddCell);
         GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
         GlobalEventManager.SendPlaingArea.AddListener(AddPlayArea);
+        GlobalEventManager.SendPlaingElements.AddListener(AddPlaingElements);
     }
 
     private void AddCell(Vector3Int position, Cell cell)
@@ -58,6 +61,11 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
         _playArea = tilemap;
     }
 
+    private void AddPlaingElements(Tilemap tilemap)
+    {
+        _PlayingElements = tilemap;
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!_isDrag)
@@ -74,16 +82,36 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
 
     public void OnDrag(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        // _dragableObject.transform.position = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var pos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        pos.z = 0;
+        _dragableObject.transform.position = pos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        Destroy(_dragableObject);
+        _isDrag = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var clickCellPosition = _playArea.WorldToCell(clickWorldPosition);
+        
+        if (_playingObjects[clickCellPosition].CellStatus != CellStatus.Empty)
+        {
+            _isDrag = true;
+            var sprite = _PlayingElements.GetSprite(clickCellPosition);
+            var go = new GameObject();
+            go.AddComponent<SpriteRenderer>();
+            go.transform.position = Vector3.zero;
+            _dragableObject = go;
+            // _dragableObject = Instantiate(sprite, Input.mousePosition, Quaternion.identity);
+            // _dragableObject = Instantiate(go,Input.mousePosition,Quaternion.identity);
+            _dragableObject.GetComponent<SpriteRenderer>().sprite = sprite;
+            _dragableObject.GetComponent<SpriteRenderer>().sortingOrder = 5;
+
+        }
     }
 }
