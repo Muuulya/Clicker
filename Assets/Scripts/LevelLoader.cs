@@ -10,9 +10,12 @@ public class LevelLoader : MonoBehaviour
     // public static Action<Dictionary<Vector3Int, Cell>, Unity.Mathematics.Random, 
     //     Tilemap, TileBase> LoadLevel;
     
+    [SerializeField] private TilemapsData _tilemapsData;
+    
     [SerializeField] private Tilemap _tilemapPlayArea;
     [SerializeField] private Tilemap _tilemapPlayingElements;
     [SerializeField] private List<TileBase> _playingElements;
+    
     
     private Unity.Mathematics.Random _random;
 
@@ -37,9 +40,10 @@ public class LevelLoader : MonoBehaviour
                 }
             }
         }
+        _tilemapsData.InitializeTilemapsData(_tilemapPlayArea,_tilemapPlayingElements,cells);
         
-        GlobalEventManager.LoadLevel.Invoke(cells,_random,_tilemapPlayingElements,_playingElements[0]);
-        GlobalEventManager.SendPlaingArea.Invoke(_tilemapPlayArea);
-        GlobalEventManager.SendPlaingElements.Invoke(_tilemapPlayingElements);
+        // GlobalEventManager.LoadLevel.Invoke(cells,_random,_tilemapPlayingElements,_playingElements[0]);
+        // GlobalEventManager.SendPlaingArea.Invoke(_tilemapPlayArea);
+        // GlobalEventManager.SendPlaingElements.Invoke(_tilemapPlayingElements);
     }
 }

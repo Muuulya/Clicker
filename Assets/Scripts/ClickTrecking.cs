@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Clicker;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,13 +11,13 @@ using Random = Unity.Mathematics.Random;
 public class ClickTrecking : MonoBehaviour, IPointerClickHandler, 
     IDragHandler, IEndDragHandler, IBeginDragHandler
 {
+    [SerializeField] private TileGenerator _tileGenerator;
+    [SerializeField] private TilemapsData _tilemapsData;
 
     private Camera _mainCamera;
     private bool _isDrag = false;
 
-    private Tilemap _playArea;
-    private Tilemap _PlayingElements;
-    private Dictionary<Vector3Int, Cell> _playingObjects = new Dictionary<Vector3Int, Cell>();
+    private Cell _currentDragableCell;
     private GameObject _dragableObject;
 
     void Start()
@@ -24,65 +25,24 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
         _mainCamera = Camera.main;
     }
 
-    private void OnEnable()
-    {
-        GlobalEventManager.AddFilledCell.AddListener(AddCell);
-        GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
-        GlobalEventManager.SendPlaingArea.AddListener(AddPlayArea);
-        GlobalEventManager.SendPlaingElements.AddListener(AddPlaingElements);
-    }
-
-    private void AddCell(Vector3Int position, Cell cell)
-    {
-        if (!_playingObjects.ContainsKey(position))
-        {
-            _playingObjects.Add(position,cell);
-        }
-        else
-        {
-            _playingObjects[position] = cell;
-        }
-    }
-
-    private void RemoveCell(Vector3Int position)
-    {
-        if (_playingObjects.ContainsKey(position))
-        {
-            _playingObjects.Remove(position);
-        }
-        else
-        {
-            throw new Exception("ClickTrecking dictionary don't have cell with key {position}");
-        }
-    }
-
-    private void AddPlayArea(Tilemap tilemap)
-    {
-        _playArea = tilemap;
-    }
-
-    private void AddPlaingElements(Tilemap tilemap)
-    {
-        _PlayingElements = tilemap;
-    }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!_isDrag)
         {
-            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            var clickCellPosition = _playArea.WorldToCell(clickWorldPosition);
+            var filledCells = _tilemapsData.GetFilledCells();
             
-            if (_playingObjects.ContainsKey(clickCellPosition))
+            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
+            
+            if (filledCells.ContainsKey(clickCellPosition))
             {
-                GlobalEventManager.AccrueMoney.Invoke(_playingObjects[clickCellPosition]);
+                GlobalEventManager.AccrueMoney.Invoke(filledCells[clickCellPosition]);
             }
         }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // _dragableObject.transform.position = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         var pos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         pos.z = 0;
         _dragableObject.transform.position = pos;
@@ -90,19 +50,53 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        var filledCells = _tilemapsData.GetFilledCells();
+
+        var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
+
+        if (filledCells.ContainsKey(clickCellPosition) &&
+            filledCells[clickCellPosition].CellStatus == _currentDragableCell.CellStatus
+            && filledCells[clickCellPosition].CellStatus != CellStatus.Lv5)
+        {
+            switch (_currentDragableCell.CellStatus)
+            {
+                case CellStatus.Lv1:
+                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv2);
+                    break;
+                case CellStatus.Lv2:
+                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv3);
+                    break;
+                case CellStatus.Lv3:
+                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv4);
+                    break;
+                case CellStatus.Lv4:
+                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv5);
+                    break;
+            }
+            _tilemapsData.SetTile(_currentDragableCell.Position,CellStatus.Empty);
+        }
+        else
+        {
+            _tilemapsData.SetTile(_currentDragableCell);
+        }
+
         Destroy(_dragableObject);
+        _currentDragableCell = null;
         _isDrag = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        var filledCells = _tilemapsData.GetFilledCells();
+
         var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        var clickCellPosition = _playArea.WorldToCell(clickWorldPosition);
+        var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
         
-        if (_playingObjects[clickCellPosition].CellStatus != CellStatus.Empty)
+        if (filledCells[clickCellPosition].CellStatus != CellStatus.Empty)
         {
             _isDrag = true;
-            var sprite = _PlayingElements.GetSprite(clickCellPosition);
+            var sprite = _tilemapsData.GetSprite(clickCellPosition);
             var go = new GameObject();
             go.AddComponent<SpriteRenderer>();
             go.transform.position = Vector3.zero;
@@ -112,6 +106,8 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
             _dragableObject.GetComponent<SpriteRenderer>().sprite = sprite;
             _dragableObject.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
+            _currentDragableCell = new Cell(filledCells[clickCellPosition]);
+            _tilemapsData.SetTile(clickCellPosition,CellStatus.Drag);
         }
     }
 }

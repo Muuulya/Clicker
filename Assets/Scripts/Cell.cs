@@ -12,5 +12,11 @@ namespace Clicker
             Position = position;
             CellStatus = CellStatus.Empty;
         }
+
+        public Cell(Cell cell)
+        {
+            Position = cell.Position;
+            CellStatus = cell.CellStatus;
+        }
     }
 }

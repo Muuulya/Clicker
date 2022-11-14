@@ -6,13 +6,14 @@ using UnityEngine;
 
 public class Earnings : MonoBehaviour
 {
-    // public static Action<Earnings> SendEarnings;
+    [SerializeField] private TilemapsData _tilemapsData;
+    public static Action<Earnings> SendEarnings;
 
     [SerializeField] private float _accrualInterval;
     
     public int Money { get; private set; }
     
-    private Dictionary<Vector3Int, Cell> _profitableCells = new Dictionary<Vector3Int, Cell>();
+    // private Dictionary<Vector3Int, Cell> _profitableCells = new Dictionary<Vector3Int, Cell>();
     private float _lastAccrual;
     
     void Start()
@@ -54,7 +55,7 @@ public class Earnings : MonoBehaviour
         if (Time.time > _lastAccrual + _accrualInterval)
         {
             int sum = 0;
-            foreach (var cell in _profitableCells)
+            foreach (var cell in _tilemapsData.GetFilledCells())
             {
                 AccrueMoney(cell.Value);
             }
@@ -65,32 +66,32 @@ public class Earnings : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.AddFilledCell.AddListener(AddCell);
-        GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
+        // GlobalEventManager.AddFilledCell.AddListener(AddCell);
+        // GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
         GlobalEventManager.AccrueMoney.AddListener(AccrueMoney);
     }
     
-    private void AddCell(Vector3Int position, Cell cell)
-    {
-        if (!_profitableCells.ContainsKey(position))
-        {
-            _profitableCells.Add(position,cell);
-        }
-        else
-        {
-            _profitableCells[position] = cell;
-        }
-    }
-
-    private void RemoveCell(Vector3Int position)
-    {
-        if (_profitableCells.ContainsKey(position))
-        {
-            _profitableCells.Remove(position);
-        }
-        else
-        {
-            throw new Exception($"Earning dictionary don't have cell with key {position}");
-        }
-    }
+    // private void AddCell(Vector3Int position, Cell cell)
+    // {
+    //     if (!_profitableCells.ContainsKey(position))
+    //     {
+    //         _profitableCells.Add(position,cell);
+    //     }
+    //     else
+    //     {
+    //         _profitableCells[position] = cell;
+    //     }
+    // }
+    //
+    // private void RemoveCell(Vector3Int position)
+    // {
+    //     if (_profitableCells.ContainsKey(position))
+    //     {
+    //         _profitableCells.Remove(position);
+    //     }
+    //     else
+    //     {
+    //         throw new Exception($"Earning dictionary don't have cell with key {position}");
+    //     }
+    // }
 }

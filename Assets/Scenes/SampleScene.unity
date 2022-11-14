@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d93fe7a555a49b4c9454e4775b719f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tilemapsData: {fileID: 2018423972}
   _tilemapPlayArea: {fileID: 388997565}
   _tilemapPlayingElements: {fileID: 484776124}
   _playingElements:
@@ -3106,6 +3107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1009972c8ad54804eb4242fb87c54a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tilemapsData: {fileID: 0}
   _maxFilledCells: 5
   _spawnDelay: 0.2
 --- !u!1 &963194225
@@ -20736,6 +20738,7 @@ GameObject:
   - component: {fileID: 2018423966}
   - component: {fileID: 2018423970}
   - component: {fileID: 2018423971}
+  - component: {fileID: 2018423972}
   m_Layer: 0
   m_Name: Grid (2)
   m_TagString: Untagged
@@ -20755,8 +20758,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1009972c8ad54804eb4242fb87c54a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxFilledCells: 50
-  _spawnDelay: 0.5
+  _tilemapsData: {fileID: 2018423972}
+  _maxFilledCells: 150
+  _spawnDelay: 0.2
 --- !u!114 &2018423967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20821,6 +20825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6317d4053689164986461e8c07a3fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tilemapsData: {fileID: 2018423972}
   _accrualInterval: 10
 --- !u!114 &2018423971
 MonoBehaviour:
@@ -20834,6 +20839,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1082531529df25247beec6e94d1be6a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tileGenerator: {fileID: 2018423966}
+  _tilemapsData: {fileID: 2018423972}
+--- !u!114 &2018423972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018423965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e157cd62035434496041b52c336965, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tileEmpty: {fileID: 11400000, guid: 61856d8634d4d35429e71c118082ac31, type: 2}
+  _tileLevel1: {fileID: 11400000, guid: b2b27e430b27df34c960ddcabc3f42aa, type: 2}
+  _tileLevel2: {fileID: 11400000, guid: 8476922feaef86c4fa44faceca80cdbe, type: 2}
+  _tileLevel3: {fileID: 11400000, guid: 9cd3192b8ece9284d97ad16ed21acf7b, type: 2}
+  _tileLevel4: {fileID: 11400000, guid: f30c48ce04c726c47bb644f53bc90d5c, type: 2}
+  _tileLevel5: {fileID: 11400000, guid: e5159e84bccec9a49aec289385eec87c, type: 2}
 --- !u!1 &2027267651
 GameObject:
   m_ObjectHideFlags: 0
