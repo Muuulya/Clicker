@@ -12,7 +12,7 @@ public class Earnings : MonoBehaviour
     [SerializeField] private Transform _coinText;
     [SerializeField] private CoinSpawner _coinSpawner;
 
-        public int Money { get; private set; }
+    public int Money { get; private set; }
     
     private float _lastAccrual;
     
@@ -25,33 +25,29 @@ public class Earnings : MonoBehaviour
 
     private void AccrueMoney(Cell cell)
     {
-        int sum = 0;
         switch (cell.CellStatus)
         {
             case CellStatus.Lv1:
-                sum += 1;
+                Money += 1;
+                _coinSpawner.SpawnCoin(cell.WorldPosition, 1);
                 break;
             case CellStatus.Lv2:
-                sum += 2;
+                Money += 2;
+                _coinSpawner.SpawnCoin(cell.WorldPosition, 2);
                 break;
             case CellStatus.Lv3:
-                sum += 4;
+                Money += 4;
+                _coinSpawner.SpawnCoin(cell.WorldPosition, 4);
                 break;
             case CellStatus.Lv4:
-                sum += 8;
+                Money += 8;
+                _coinSpawner.SpawnCoin(cell.WorldPosition, 8);
                 break;
             case CellStatus.Lv5:
-                sum += 16;
+                Money += 16;
+                _coinSpawner.SpawnCoin(cell.WorldPosition, 16);
                 break;
         }
-
-        // var coin = Instantiate(_coin, cell.WorldPosition, Quaternion.identity);
-        // var aa = _coinText.position;
-        // aa.z = 6;
-        // var a = Camera.main.ScreenToWorldPoint(aa);
-        // coin.GetComponent<Coin>().Initialize(a);
-        _coinSpawner.SpawnCoin(cell.WorldPosition);
-        Money += sum;
     }
     void Update()
     {
