@@ -9,6 +9,4 @@ public class HideTilemap : MonoBehaviour
     {
         GetComponent<TilemapRenderer>().enabled = false;
     }
-
-
 }

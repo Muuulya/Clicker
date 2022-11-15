@@ -7,13 +7,13 @@ using UnityEngine;
 public class Earnings : MonoBehaviour
 {
     [SerializeField] private TilemapsData _tilemapsData;
-    public static Action<Earnings> SendEarnings;
-
     [SerializeField] private float _accrualInterval;
+    [SerializeField] private GameObject _coin;
+    [SerializeField] private Transform _coinText;
+    [SerializeField] private CoinSpawner _coinSpawner;
+
+        public int Money { get; private set; }
     
-    public int Money { get; private set; }
-    
-    // private Dictionary<Vector3Int, Cell> _profitableCells = new Dictionary<Vector3Int, Cell>();
     private float _lastAccrual;
     
     void Start()
@@ -43,11 +43,14 @@ public class Earnings : MonoBehaviour
             case CellStatus.Lv5:
                 sum += 16;
                 break;
-            case CellStatus.Empty:
-                throw new Exception($"ProfitableCell in key {cell} is enpty");
-                break;
         }
 
+        // var coin = Instantiate(_coin, cell.WorldPosition, Quaternion.identity);
+        // var aa = _coinText.position;
+        // aa.z = 6;
+        // var a = Camera.main.ScreenToWorldPoint(aa);
+        // coin.GetComponent<Coin>().Initialize(a);
+        _coinSpawner.SpawnCoin(cell.WorldPosition);
         Money += sum;
     }
     void Update()
@@ -66,32 +69,6 @@ public class Earnings : MonoBehaviour
 
     private void OnEnable()
     {
-        // GlobalEventManager.AddFilledCell.AddListener(AddCell);
-        // GlobalEventManager.RemoveFilledCell.AddListener(RemoveCell);
         GlobalEventManager.AccrueMoney.AddListener(AccrueMoney);
     }
-    
-    // private void AddCell(Vector3Int position, Cell cell)
-    // {
-    //     if (!_profitableCells.ContainsKey(position))
-    //     {
-    //         _profitableCells.Add(position,cell);
-    //     }
-    //     else
-    //     {
-    //         _profitableCells[position] = cell;
-    //     }
-    // }
-    //
-    // private void RemoveCell(Vector3Int position)
-    // {
-    //     if (_profitableCells.ContainsKey(position))
-    //     {
-    //         _profitableCells.Remove(position);
-    //     }
-    //     else
-    //     {
-    //         throw new Exception($"Earning dictionary don't have cell with key {position}");
-    //     }
-    // }
 }

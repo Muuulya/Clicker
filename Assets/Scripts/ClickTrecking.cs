@@ -11,8 +11,9 @@ using Random = Unity.Mathematics.Random;
 public class ClickTrecking : MonoBehaviour, IPointerClickHandler, 
     IDragHandler, IEndDragHandler, IBeginDragHandler
 {
-    [SerializeField] private TileGenerator _tileGenerator;
+    // [SerializeField] private TileGenerator _tileGenerator;
     [SerializeField] private TilemapsData _tilemapsData;
+    [SerializeField] private float _DragOffset = 1;
 
     private Camera _mainCamera;
     private bool _isDrag = false;
@@ -31,7 +32,7 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
         {
             var filledCells = _tilemapsData.GetFilledCells();
             
-            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(GetMousPosition());
             var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
             
             if (filledCells.ContainsKey(clickCellPosition))
@@ -43,71 +44,82 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
 
     public void OnDrag(PointerEventData eventData)
     {
-        var pos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        pos.z = 0;
-        _dragableObject.transform.position = pos;
+        if (_isDrag)
+        {
+            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(GetMousPosition());
+            clickWorldPosition.y += _DragOffset;
+            _dragableObject.transform.position = clickWorldPosition;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        var filledCells = _tilemapsData.GetFilledCells();
-
-        var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
-
-        if (filledCells.ContainsKey(clickCellPosition) &&
-            filledCells[clickCellPosition].CellStatus == _currentDragableCell.CellStatus
-            && filledCells[clickCellPosition].CellStatus != CellStatus.Lv5)
+        if (_isDrag)
         {
-            switch (_currentDragableCell.CellStatus)
+            var filledCells = _tilemapsData.GetFilledCells();
+
+            var clickWorldPosition = _mainCamera.ScreenToWorldPoint(GetMousPosition());
+            var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
+
+            if (filledCells.ContainsKey(clickCellPosition) &&
+                filledCells[clickCellPosition].CellStatus == _currentDragableCell.CellStatus
+                && filledCells[clickCellPosition].CellStatus != CellStatus.Lv5)
             {
-                case CellStatus.Lv1:
-                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv2);
-                    break;
-                case CellStatus.Lv2:
-                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv3);
-                    break;
-                case CellStatus.Lv3:
-                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv4);
-                    break;
-                case CellStatus.Lv4:
-                    _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv5);
-                    break;
+                switch (_currentDragableCell.CellStatus)
+                {
+                    case CellStatus.Lv1:
+                        _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv2);
+                        break;
+                    case CellStatus.Lv2:
+                        _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv3);
+                        break;
+                    case CellStatus.Lv3:
+                        _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv4);
+                        break;
+                    case CellStatus.Lv4:
+                        _tilemapsData.SetTile(clickCellPosition,CellStatus.Lv5);
+                        break;
+                }
+                _tilemapsData.SetTile(_currentDragableCell.Position,CellStatus.Empty);
             }
-            _tilemapsData.SetTile(_currentDragableCell.Position,CellStatus.Empty);
-        }
-        else
-        {
-            _tilemapsData.SetTile(_currentDragableCell);
-        }
+            else
+            {
+                _tilemapsData.SetTile(_currentDragableCell);
+            }
 
-        Destroy(_dragableObject);
-        _currentDragableCell = null;
+            Destroy(_dragableObject);
+            _currentDragableCell = null;
+        }
         _isDrag = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         var filledCells = _tilemapsData.GetFilledCells();
-
-        var clickWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        
+        var clickWorldPosition = _mainCamera.ScreenToWorldPoint(GetMousPosition());
         var clickCellPosition = _tilemapsData.GetCellPosition(clickWorldPosition);
         
-        if (filledCells[clickCellPosition].CellStatus != CellStatus.Empty)
+        if (filledCells.ContainsKey(clickCellPosition))
         {
             _isDrag = true;
-            var sprite = _tilemapsData.GetSprite(clickCellPosition);
-            var go = new GameObject();
-            go.AddComponent<SpriteRenderer>();
-            go.transform.position = Vector3.zero;
-            _dragableObject = go;
-            // _dragableObject = Instantiate(sprite, Input.mousePosition, Quaternion.identity);
-            // _dragableObject = Instantiate(go,Input.mousePosition,Quaternion.identity);
-            _dragableObject.GetComponent<SpriteRenderer>().sprite = sprite;
-            _dragableObject.GetComponent<SpriteRenderer>().sortingOrder = 5;
+            _dragableObject = new GameObject();
+            var spriteRenderer = _dragableObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = _tilemapsData.GetSprite(clickCellPosition);
+            spriteRenderer.sortingOrder = 5;
+            clickWorldPosition.y += _DragOffset;
+            _dragableObject.transform.position = clickWorldPosition;
 
             _currentDragableCell = new Cell(filledCells[clickCellPosition]);
             _tilemapsData.SetTile(clickCellPosition,CellStatus.Drag);
         }
+    }
+
+    private Vector3 GetMousPosition()
+    {
+        var mousePosition = Input.mousePosition;
+        var z = (gameObject.transform.position - _mainCamera.transform.position).z;
+        mousePosition.z = z;
+        return mousePosition;
     }
 }

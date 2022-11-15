@@ -6,10 +6,13 @@ namespace Clicker
     {
         public Vector3Int Position { get; }
         public CellStatus CellStatus { get; set; }
+        
+        public Vector3 WorldPosition { get; }
 
-        public Cell(Vector3Int position)
+        public Cell(Vector3Int position, Vector3 worldPosition)
         {
             Position = position;
+            WorldPosition = worldPosition;
             CellStatus = CellStatus.Empty;
         }
 

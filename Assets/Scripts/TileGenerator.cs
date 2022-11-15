@@ -28,12 +28,7 @@ public class TileGenerator : MonoBehaviour
     private void Start()
     {
         _random = new Random(Convert.ToUInt32(DateTime.Now.Millisecond));
-        // _tiles = new Dictionary<CellStatus, TileBase>();
-        // _tiles.Add(CellStatus.Lv1,_tileLevel1);
-        // _tiles.Add(CellStatus.Lv2,_tileLevel2);
-        // _tiles.Add(CellStatus.Lv3,_tileLevel3);
-        // _tiles.Add(CellStatus.Lv4,_tileLevel4);
-        // _tiles.Add(CellStatus.Lv5,_tileLevel5);
+        SpawnNewTile();
     }
     
     private void Update()
