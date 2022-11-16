@@ -11,11 +11,13 @@ public class TileGenerator : MonoBehaviour
     [SerializeField] private TilemapsData _tilemapsData;
     [SerializeField] private int _maxFilledCells;
     [SerializeField] private float _spawnDelay;
+    
+    public int PurchasedCells { get; private set; }
 
     private Dictionary<Vector3Int, Cell> _cells;
     private Random _random;
     private float _lastSpawnTime = 0;
-
+    
     private void Start()
     {
         _random = new Random(Convert.ToUInt32(DateTime.Now.Millisecond));
@@ -35,7 +37,7 @@ public class TileGenerator : MonoBehaviour
     {
         var filledCells = _tilemapsData.GetFilledCells();
         
-        if (filledCells.Count < _maxFilledCells)
+        if (filledCells.Count < _maxFilledCells + PurchasedCells)
         {
             var emptyCellsCount = _tilemapsData.GetEmptyCells();
             
@@ -45,5 +47,15 @@ public class TileGenerator : MonoBehaviour
                 _tilemapsData.SetTile(pos, CellStatus.Lv1);
             }
         }
+    }
+
+    public void InitializeTileGenerator(int purchasedCells)
+    {
+        PurchasedCells = purchasedCells;
+    }
+
+    public void AddCell()
+    {
+        PurchasedCells++;
     }
 }

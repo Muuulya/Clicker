@@ -87,4 +87,16 @@ public class Earnings : MonoBehaviour
             _lastAccrual = Time.time;
         }
     }
+
+    public void SpendMoney(int price)
+    {
+        if (Money > price)
+        {
+            Money -= price;
+        }
+        else
+        {
+            Debug.LogError("Not enough money to buy.");
+        }
+    }
 }

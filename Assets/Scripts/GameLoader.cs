@@ -13,6 +13,8 @@ public class GameLoader : MonoBehaviour
     [SerializeField] private TilemapsData _tilemapsData;
     [SerializeField] private Tilemap _tilemapPlayArea;
     [SerializeField] private Earnings _earnings;
+    [SerializeField] private TileGenerator _tileGenerator;
+    [SerializeField] private Shop _shop;
     
     private string _savePath = "/MySaveData.dat";
     
@@ -47,6 +49,8 @@ public class GameLoader : MonoBehaviour
         }
         _tilemapsData.Initialize(cells);
         _earnings.Initialize(0);
+        _tileGenerator.InitializeTileGenerator(0);
+        _shop.InitializeShop();
     }
 
     private void OnApplicationPause(bool hasFocus)
@@ -70,6 +74,8 @@ public class GameLoader : MonoBehaviour
         data.Cells = SaveCells(_tilemapsData.GetAllCells());
         data.Money = _earnings.Money;
         data.DateTime = DateTime.Now;
+        data.PurchasedCells = _tileGenerator.PurchasedCells;
+        data.CurrentCellPrice = _shop.CurrentCellPrice;
 
         bf.Serialize(file, data);
         file.Close();
@@ -85,6 +91,8 @@ public class GameLoader : MonoBehaviour
             
             _tilemapsData.Initialize(LoadCells(data.Cells));
             _earnings.Initialize(data.Money);
+            _tileGenerator.InitializeTileGenerator(data.PurchasedCells);
+            _shop.InitializeShop(data.CurrentCellPrice);
             
             var time = DateTime.Now - data.DateTime;
             var totalSeconds = time.Seconds + ((time.Minutes + ((time.Hours + (time.Days * 24)) * 60)) * 60);
@@ -93,7 +101,9 @@ public class GameLoader : MonoBehaviour
             file.Close();
         }
         else
+        {
             Debug.LogError("There is no save data!");
+        }
     }
    
     public void ResetData()
@@ -104,7 +114,9 @@ public class GameLoader : MonoBehaviour
             StartInitialize();
         }
         else
+        {
             Debug.LogError("No save data to delete.");
+        }
     }
 
     private Dictionary<string, CellStatus> SaveCells(Dictionary<Vector3Int,Cell> cells)
