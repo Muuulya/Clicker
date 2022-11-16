@@ -111,12 +111,12 @@ public class GameLoader : MonoBehaviour
         if (File.Exists(Application.persistentDataPath + _savePath))
         {
             File.Delete(Application.persistentDataPath + _savePath);
-            StartInitialize();
         }
         else
         {
             Debug.LogError("No save data to delete.");
         }
+        StartInitialize();
     }
 
     private Dictionary<string, CellStatus> SaveCells(Dictionary<Vector3Int,Cell> cells)
