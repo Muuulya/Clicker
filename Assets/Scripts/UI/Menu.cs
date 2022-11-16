@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Menu : MonoBehaviour
 {
-    [SerializeField] private GameObject _panel;
     [SerializeField] private Animator _animator;
 
     private bool isOpen = false;
@@ -13,7 +12,6 @@ public class Menu : MonoBehaviour
 
     public void OpenAndCloseMenu()
     {
-        // _panel.SetActive(true);
         if (!isOpen)
         {
             _animator.SetTrigger("Open");
@@ -28,7 +26,6 @@ public class Menu : MonoBehaviour
 
     public void CloseMenu()
     {
-        // _panel.SetActive(false);
         _animator.SetTrigger("Open");
     }
 }

@@ -8,26 +8,16 @@ public class Earnings : MonoBehaviour
 {
     [SerializeField] private TilemapsData _tilemapsData;
     [SerializeField] private float _accrualInterval;
-    [SerializeField] private GameObject _coin;
-    [SerializeField] private Transform _coinText;
     [SerializeField] private CoinSpawner _coinSpawner;
 
     public int Money { get; private set; }
     
     private float _lastAccrual;
-    
-    void Start()
-    {
-        // Money = 0;
-        // _lastAccrual = Time.time;
-        // GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
-    }
 
     public void Initialize(int money)
     {
         Money = money;
         _lastAccrual = Time.time;
-        GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
     }
 
     public void AccrueCoinsForPastPeriod(int period)
@@ -58,7 +48,7 @@ public class Earnings : MonoBehaviour
         }
     }
 
-    private void AccrueMoney(Cell cell)
+    public void AccrueMoney(Cell cell)
     {
         switch (cell.CellStatus)
         {
@@ -96,10 +86,5 @@ public class Earnings : MonoBehaviour
             
             _lastAccrual = Time.time;
         }
-    }
-
-    private void OnEnable()
-    {
-        GlobalEventManager.AccrueMoney.AddListener(AccrueMoney);
     }
 }

@@ -11,8 +11,8 @@ using Random = Unity.Mathematics.Random;
 public class ClickTrecking : MonoBehaviour, IPointerClickHandler, 
     IDragHandler, IEndDragHandler, IBeginDragHandler
 {
-    // [SerializeField] private TileGenerator _tileGenerator;
     [SerializeField] private TilemapsData _tilemapsData;
+    [SerializeField] private Earnings _earnings;
     [SerializeField] private float _DragOffset = 1;
 
     private Camera _mainCamera;
@@ -37,7 +37,7 @@ public class ClickTrecking : MonoBehaviour, IPointerClickHandler,
             
             if (filledCells.ContainsKey(clickCellPosition))
             {
-                GlobalEventManager.AccrueMoney.Invoke(filledCells[clickCellPosition]);
+                _earnings.AccrueMoney(filledCells[clickCellPosition]);
             }
         }
     }

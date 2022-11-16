@@ -12,18 +12,9 @@ public class TileGenerator : MonoBehaviour
     [SerializeField] private int _maxFilledCells;
     [SerializeField] private float _spawnDelay;
 
-    // [SerializeField] private TileBase _tileLevel1;
-    // [SerializeField] private TileBase _tileLevel2;
-    // [SerializeField] private TileBase _tileLevel3;
-    // [SerializeField] private TileBase _tileLevel4;
-    // [SerializeField] private TileBase _tileLevel5;
-    
-    // private Dictionary<CellStatus, TileBase> _tiles;
-
     private Dictionary<Vector3Int, Cell> _cells;
     private Random _random;
     private float _lastSpawnTime = 0;
-
 
     private void Start()
     {
@@ -55,6 +46,4 @@ public class TileGenerator : MonoBehaviour
             }
         }
     }
-    
-    
 }

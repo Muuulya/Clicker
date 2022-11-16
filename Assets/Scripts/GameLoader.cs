@@ -8,11 +8,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
-public class LevelLoader : MonoBehaviour
+public class GameLoader : MonoBehaviour
 {
     [SerializeField] private TilemapsData _tilemapsData;
     [SerializeField] private Tilemap _tilemapPlayArea;
-    // [SerializeField] private Tilemap _tilemapPlayingElements;
     [SerializeField] private Earnings _earnings;
     
     private string _savePath = "/MySaveData.dat";
@@ -74,7 +73,6 @@ public class LevelLoader : MonoBehaviour
 
         bf.Serialize(file, data);
         file.Close();
-        Debug.Log("Game data saved!");
     }
 
     private void LoadGame()
@@ -93,12 +91,10 @@ public class LevelLoader : MonoBehaviour
             _earnings.AccrueCoinsForPastPeriod(totalSeconds);
             
             file.Close();
-            Debug.Log("Game data loaded!");
         }
         else
             Debug.LogError("There is no save data!");
     }
-
    
     public void ResetData()
     {
@@ -106,7 +102,6 @@ public class LevelLoader : MonoBehaviour
         {
             File.Delete(Application.persistentDataPath + _savePath);
             StartInitialize();
-            Debug.Log("Data reset complete!");
         }
         else
             Debug.LogError("No save data to delete.");
@@ -141,6 +136,7 @@ public class LevelLoader : MonoBehaviour
 
     public void ExitGame()
     {
+        SaveGame();
         Application.Quit();
     }
 }
