@@ -37,4 +37,5 @@ public class LevelLoader : MonoBehaviour
         }
         _tilemapsData.InitializeTilemapsData(_tilemapPlayArea,_tilemapPlayingElements,cells);
     }
+    
 }
