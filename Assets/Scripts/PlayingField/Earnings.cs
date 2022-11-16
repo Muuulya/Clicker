@@ -18,9 +18,44 @@ public class Earnings : MonoBehaviour
     
     void Start()
     {
-        Money = 0;
+        // Money = 0;
+        // _lastAccrual = Time.time;
+        // GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
+    }
+
+    public void Initialize(int money)
+    {
+        Money = money;
         _lastAccrual = Time.time;
         GlobalEventManager.SendEarnings.Invoke(gameObject.GetComponent<Earnings>());
+    }
+
+    public void AccrueCoinsForPastPeriod(int period)
+    {
+        var numberOfAccrual = (int)(period / _accrualInterval);
+        var cells = _tilemapsData.GetFilledCells();
+        foreach (var cell in cells)
+        {
+            switch (cell.Value.CellStatus)
+            {
+                case CellStatus.Lv1:
+                    Money += 1 * numberOfAccrual;
+                    break;
+                case CellStatus.Lv2:
+                    Money += 2 * numberOfAccrual;
+                    break;
+                case CellStatus.Lv3:
+                    Money += 4 * numberOfAccrual;
+                    break;
+                case CellStatus.Lv4:
+                    Money += 8 * numberOfAccrual;
+                    break;
+                case CellStatus.Lv5:
+                    Money += 16 * numberOfAccrual;
+                    break;
+            }
+
+        }
     }
 
     private void AccrueMoney(Cell cell)

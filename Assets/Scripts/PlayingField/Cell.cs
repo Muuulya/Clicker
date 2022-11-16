@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace Clicker
 {
+    [Serializable]
     public class Cell
     {
         public Vector3Int Position { get; }
@@ -20,6 +22,13 @@ namespace Clicker
         {
             Position = cell.Position;
             CellStatus = cell.CellStatus;
+        }
+        
+        public Cell(Vector3Int position, Vector3 worldPosition, CellStatus status)
+        {
+            Position = position;
+            WorldPosition = worldPosition;
+            CellStatus = status;
         }
     }
 }

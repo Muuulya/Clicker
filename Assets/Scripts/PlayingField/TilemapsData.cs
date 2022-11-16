@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using UnityEngine.Tilemaps;
 
 public class TilemapsData : MonoBehaviour
 {
+    [Header("Tiles")]
     [SerializeField] private TileBase _tileEmpty;
     [SerializeField] private TileBase _tileLevel1;
     [SerializeField] private TileBase _tileLevel2;
@@ -14,17 +16,15 @@ public class TilemapsData : MonoBehaviour
     [SerializeField] private TileBase _tileLevel4;
     [SerializeField] private TileBase _tileLevel5;
     
-    private Dictionary<CellStatus, TileBase> _tiles;
-
-    private Tilemap _tilemapPlayArea;
-    private Tilemap _tilemapPlayingElements;
+    [Header("Tilemaps")]
+    [SerializeField] private Tilemap _tilemapPlayArea; 
+    [SerializeField] private Tilemap _tilemapPlayingElements; 
+    
     private Dictionary<Vector3Int, Cell> _cells;
-
-    public void InitializeTilemapsData(Tilemap pArea, Tilemap pElements,
-        Dictionary<Vector3Int, Cell> cells)
+    private Dictionary<CellStatus, TileBase> _tiles;
+    
+    public void Initialize(Dictionary<Vector3Int, Cell> cells)
     {
-        _tilemapPlayArea = pArea;
-        _tilemapPlayingElements = pElements;
         _cells = cells;
         
         _tiles = new Dictionary<CellStatus, TileBase>();
@@ -35,6 +35,18 @@ public class TilemapsData : MonoBehaviour
         _tiles.Add(CellStatus.Lv4,_tileLevel4);
         _tiles.Add(CellStatus.Lv5,_tileLevel5);
         _tiles.Add(CellStatus.Drag,_tileEmpty);
+
+        foreach (var cell in _cells)
+        {
+            SetTile(cell.Value);
+        }
+    }
+
+    public Dictionary<Vector3Int, Cell> GetAllCells()
+    {
+        var cells = _cells
+            .ToDictionary(c => c.Key, c => c.Value);
+        return cells;
     }
 
     public Dictionary<Vector3Int, Cell> GetEmptyCells()
