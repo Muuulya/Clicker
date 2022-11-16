@@ -21,28 +21,33 @@ public class LevelLoader : MonoBehaviour
     {
         if (!File.Exists(Application.persistentDataPath + _savePath))
         {
-            _tilemapPlayArea.CompressBounds();
-            var minPosition = _tilemapPlayArea.cellBounds.min;
-            var maxPosition = _tilemapPlayArea.cellBounds.max;
+            StartInitialize();
+        }
+    }
+
+    private void StartInitialize()
+    {
+        _tilemapPlayArea.CompressBounds();
+        var minPosition = _tilemapPlayArea.cellBounds.min;
+        var maxPosition = _tilemapPlayArea.cellBounds.max;
         
-            var cells = new Dictionary<Vector3Int, Cell>();
+        var cells = new Dictionary<Vector3Int, Cell>();
         
-            for (int i = minPosition.x; i < maxPosition.x; i++)
+        for (int i = minPosition.x; i < maxPosition.x; i++)
+        {
+            for (int j = minPosition.y; j < maxPosition.y; j++)
             {
-                for (int j = minPosition.y; j < maxPosition.y; j++)
+                var pos = new Vector3Int(i, j, 0);
+                if (_tilemapPlayArea.GetTile(pos) != null)
                 {
-                    var pos = new Vector3Int(i, j, 0);
-                    if (_tilemapPlayArea.GetTile(pos) != null)
-                    {
-                        var worldPos = _tilemapPlayArea.CellToWorld(pos);
-                        var cell = new Cell(pos, worldPos);
-                        cells.Add(pos, cell);
-                    }
+                    var worldPos = _tilemapPlayArea.CellToWorld(pos);
+                    var cell = new Cell(pos, worldPos);
+                    cells.Add(pos, cell);
                 }
             }
-            _tilemapsData.Initialize(cells);
-            _earnings.Initialize(0);
         }
+        _tilemapsData.Initialize(cells);
+        _earnings.Initialize(0);
     }
 
     private void OnApplicationPause(bool hasFocus)
@@ -95,12 +100,12 @@ public class LevelLoader : MonoBehaviour
     }
 
    
-    private void ResetData()
+    public void ResetData()
     {
         if (File.Exists(Application.persistentDataPath + _savePath))
         {
             File.Delete(Application.persistentDataPath + _savePath);
-            
+            StartInitialize();
             Debug.Log("Data reset complete!");
         }
         else
@@ -132,5 +137,10 @@ public class LevelLoader : MonoBehaviour
             result.Add(pos, new Cell(pos, worldPos, cell.Value));
         }
         return result;
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
